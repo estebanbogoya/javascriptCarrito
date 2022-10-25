@@ -55,8 +55,6 @@ const mostrarProductos = () => {
     });
 }
 
-//FUNCIONES
-
 const agregarAlCarrito = (id) => {
     const producto = arrayProductos.find((producto) => producto.id === id);
     const productoEnCarrito = carrito.find((producto) => producto.id === id)
@@ -68,6 +66,7 @@ const agregarAlCarrito = (id) => {
         localStorage.setItem("carrito",JSON.stringify(carrito))
     }
     calcularTotal();
+    mostrarCarrito();
 }
 
 mostrarProductos();
@@ -81,6 +80,8 @@ verCarrito.addEventListener("click", () => {
     mostrarCarrito();
 })
 
+// Funcion para mostrarlo:
+
 const mostrarCarrito = () => {
     contenedorCarrito.innerHTML = "";
     carrito.forEach((producto) => {
@@ -92,7 +93,13 @@ const mostrarCarrito = () => {
             <div class = "card-body">
             <h5 class = "card-title"> Camiseta del ${producto.equipo}</h5>
             <p class = "card-text"> Precio: $${producto.precio} USD</p>
-            <p class = "card-text"> Cantidad: ${producto.cantidad}</p>
+            <div class = "card-text"> 
+                <div class = "wrapper">
+                    <span class = "minus" id = "menos${producto.id}">-</span>
+                    <span class = "num">${producto.cantidad}</span>
+                    <span class = "plus" id = "mas${producto.id}">+</span>
+                </div>
+            </div>
             <button class = "btn colorBoton" id ="eliminar${producto.id}"> Eliminar Producto </button>
             </div>
         </div>`
@@ -105,9 +112,59 @@ const mostrarCarrito = () => {
             eliminarDelCarrito(producto.id);
         })
         calcularTotal();
+
+        const menos = document.getElementById(`menos${producto.id}`)
+        const mas = document.getElementById(`mas${producto.id}`)
+
+        menos.addEventListener("click", ()=>{
+            bajarcantidad(producto.id);
+        })
+
+        mas.addEventListener("click", ()=>{
+            aumentarcantidad(producto.id);
+        })
+
     })
 }
 
+// Aumentar y Bajar cantidad!
+
+// Bajar cantidad usando el boton -
+
+const bajarcantidad = (id) => {
+    const producto = carrito.find((producto) => producto.id === id);
+    const productoEnCarrito = carrito.find((producto) => producto.id === id)
+
+    if (productoEnCarrito) {
+        productoEnCarrito.cantidad--
+    }
+
+    if(productoEnCarrito.cantidad < 1){
+        eliminarDelCarrito(producto.id)
+        calcularTotal();
+        localStorage.remove(producto.id)
+    }
+    
+    calcularTotal();
+    mostrarCarrito();
+    
+}
+
+// Aumentar la cantidad usando el boton +
+
+const aumentarcantidad = (id) => {
+    const producto = carrito.find((producto) => producto.id === id);
+    const productoEnCarrito = carrito.find((producto) => producto.id === id)
+
+    if (productoEnCarrito) {
+        productoEnCarrito.cantidad++
+    } else {
+        carrito.push(producto);
+        localStorage.setItem("carrito",JSON.stringify(carrito))
+    }
+    calcularTotal();
+    mostrarCarrito();
+}
 //Eliminando un producto
 
 const eliminarDelCarrito = (id) => {
@@ -132,6 +189,7 @@ vaciarCarrito.addEventListener("click", () => {
 
 const eliminarTodoElCarrito = () => {
     carrito = [];
+    calcularTotal();
     mostrarCarrito();
 
     localStorage.clear();
