@@ -16,11 +16,17 @@
     display: flex;
     align-items: center;
     margin: 0.5rem;
+    border-radius: 15px;
+    border-color: black;
 }
+
+.card:hover {
+    transform: scale(1.05);
+  }
 
 .colorBoton{
     color: white;
-    background-color: #85bb65;
+    background-color: #B8860B;
 }
 
 .colorBoton:hover{

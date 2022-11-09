@@ -6,7 +6,7 @@ class Camiseta {
         this.equipo = equipo
         this.precio = precio
         this.img = img
-        this.cantidad = 1
+        this.cantidad = 0
     }
 
 }
@@ -51,9 +51,19 @@ const mostrarProductos = () => {
         const boton = document.getElementById(`boton${producto.id}`);
         boton.addEventListener("click", () => {
             agregarAlCarrito(producto.id);
+            Toastify({
+                text: "Producto Agregado al Carrito",
+                duration: 1000,
+                gravity: "bottom",
+                position: "right",
+            }).showToast();
         })
-    });
+
+    })
 }
+
+
+
 
 const agregarAlCarrito = (id) => {
     const producto = arrayProductos.find((producto) => producto.id === id);
@@ -63,10 +73,10 @@ const agregarAlCarrito = (id) => {
         productoEnCarrito.cantidad++
     } else {
         carrito.push(producto);
-        localStorage.setItem("carrito",JSON.stringify(carrito))
+        producto.cantidad++
+        localStorage.setItem("carrito", JSON.stringify(carrito))
     }
     calcularTotal();
-    mostrarCarrito();
 }
 
 mostrarProductos();
@@ -83,6 +93,19 @@ verCarrito.addEventListener("click", () => {
 // Funcion para mostrarlo:
 
 const mostrarCarrito = () => {
+    if (carrito.length === 0) {
+        Toastify({
+            text: "El Carrito esta vacio",
+            duration: 1000,
+            gravity: "bottom",
+            position: "right",
+            style:
+            {
+                background: "red"
+            }
+        
+    }).showToast()}
+
     contenedorCarrito.innerHTML = "";
     carrito.forEach((producto) => {
         const card = document.createElement("div");
@@ -92,7 +115,7 @@ const mostrarCarrito = () => {
             <img src = "${producto.img}" class = "card-img-top imgProductos" alt = "${producto.equipo}"
             <div class = "card-body">
             <h5 class = "card-title"> Camiseta del ${producto.equipo}</h5>
-            <p class = "card-text"> Precio: $${producto.precio} USD</p>
+            <p class = "card-text"> Precio: $${producto.precio * producto.cantidad} USD</p>
             <div class = "card-text"> 
                 <div class = "wrapper">
                     <span class = "minus" id = "menos${producto.id}">-</span>
@@ -105,22 +128,25 @@ const mostrarCarrito = () => {
         </div>`
         contenedorCarrito.appendChild(card);
 
+        
         //Eliminar Producto.
 
         const boton = document.getElementById(`eliminar${producto.id}`)
         boton.addEventListener("click", () => {
             eliminarDelCarrito(producto.id);
+            producto.cantidad = 0
+            calcularTotal();
         })
         calcularTotal();
 
         const menos = document.getElementById(`menos${producto.id}`)
         const mas = document.getElementById(`mas${producto.id}`)
 
-        menos.addEventListener("click", ()=>{
+        menos.addEventListener("click", () => {
             bajarcantidad(producto.id);
         })
 
-        mas.addEventListener("click", ()=>{
+        mas.addEventListener("click", () => {
             aumentarcantidad(producto.id);
         })
 
@@ -139,15 +165,15 @@ const bajarcantidad = (id) => {
         productoEnCarrito.cantidad--
     }
 
-    if(productoEnCarrito.cantidad < 1){
+    if (productoEnCarrito.cantidad < 1) {
         eliminarDelCarrito(producto.id)
         calcularTotal();
         localStorage.remove(producto.id)
     }
-    
+
     calcularTotal();
     mostrarCarrito();
-    
+
 }
 
 // Aumentar la cantidad usando el boton +
@@ -160,7 +186,7 @@ const aumentarcantidad = (id) => {
         productoEnCarrito.cantidad++
     } else {
         carrito.push(producto);
-        localStorage.setItem("carrito",JSON.stringify(carrito))
+        localStorage.setItem("carrito", JSON.stringify(carrito))
     }
     calcularTotal();
     mostrarCarrito();
@@ -171,35 +197,27 @@ const eliminarDelCarrito = (id) => {
     const producto = carrito.find((producto) => producto.id === id);
     const indice = carrito.indexOf(producto);
     carrito.splice(indice, 1)
-
+    Toastify({
+        text: "Producto Eliminado del Carrito",
+        duration: 1000,
+        gravity: "bottom",
+        position: "right",
+        style:
+        {
+            background: "red"
+        }
+    }).showToast();
     mostrarCarrito();
 
-    localStorage.setItem("carrito", JSON.stringify(carrito))
-}
 
-// Vaciar todo el Carrito 
-
-const vaciarCarrito = document.getElementById("vaciarCarrito");
-
-vaciarCarrito.addEventListener("click", () => {
-    eliminarTodoElCarrito();
-})
-
-//Funcion de eliminar del carrito
-
-const eliminarTodoElCarrito = () => {
-    carrito = [];
-    calcularTotal();
-    mostrarCarrito();
-
-    localStorage.clear();
+localStorage.setItem("carrito", JSON.stringify(carrito))
 }
 
 // Mostrar total de la compra.
 
 const total = document.getElementById("total");
 
-const calcularTotal = ()=>{
+const calcularTotal = () => {
     let totalCompra = 0
     carrito.forEach((producto) => {
         totalCompra += producto.precio * producto.cantidad;
