@@ -5,6 +5,14 @@
     margin-top: 30px;
 }
 
+.header{
+    display: flex;
+    justify-content: space-between;
+}
+
+.header h1{
+    align-items: center;
+}
 .imgProductos{
     width: 150px;
     height: 200px;
@@ -20,7 +28,7 @@
     border-color: black;
 }
 
-.card:hover {
+.cards:hover {
     transform: scale(1.05);
   }
 

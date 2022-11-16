@@ -36,7 +36,7 @@ const mostrarProductos = () => {
         const card = document.createElement("div");
         card.classList.add = ("col-xl-3", "col-md-6", "col-xs-12")
         card.innerHTML = `
-        <div class ="card">
+        <div class ="card cards">
             <img src = "${producto.img}" class = "card-img-top imgProductos" alt = "${producto.equipo}"
             <div class = "card-body">
             <h5 class = "card-title"> Camiseta del ${producto.equipo}</h5>
@@ -111,7 +111,7 @@ const mostrarCarrito = () => {
         const card = document.createElement("div");
         card.classList.add = ("col-xl-3", "col-md-6", "col-xs-12")
         card.innerHTML = `
-        <div class ="card">
+        <div class ="card cards">
             <img src = "${producto.img}" class = "card-img-top imgProductos" alt = "${producto.equipo}"
             <div class = "card-body">
             <h5 class = "card-title"> Camiseta del ${producto.equipo}</h5>
@@ -223,4 +223,58 @@ const calcularTotal = () => {
         totalCompra += producto.precio * producto.cantidad;
     })
     total.innerHTML = `$${totalCompra} USD`;
+}
+
+// Finalizar la compra.
+
+const finalizarCompra = document.getElementById("finalizarCompra")
+
+finalizarCompra.addEventListener("click", ()=>{
+    completePurchase();
+})
+
+function completePurchase(){
+    if (carrito.length>0) {
+        Swal.fire({
+            title: `Estas seguro que deseas finalizar tu compra?`,
+            icon: "warning",
+            background: "white",
+            confirmButtonText: "Aceptar",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            cancelButtonColor: "#B7950B",
+            confirmButtonColor: "#B7950B"
+        }).then((result) =>{
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title:"Compra Finalizada. Gracias por tu compra!",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor:"#B7950B"
+                })
+                vaciarCarrito();
+                calcularTotal();
+                mostrarCarrito();
+            }
+        })
+    }else{
+        Toastify({
+            text: "No has seleccionado ningun producto para comprar",
+            duration: 2000,
+            gravity: "bottom",
+            position: "right",
+            style:
+            {
+                background: "red"
+            }
+        }).showToast();
+    }
+   
+}
+
+function vaciarCarrito(){
+    for (const producto of carrito) {
+        producto.cantidad = 0
+    }
+    carrito.length = 0
 }
