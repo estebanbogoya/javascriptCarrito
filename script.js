@@ -103,8 +103,9 @@ const mostrarCarrito = () => {
             {
                 background: "red"
             }
-        
-    }).showToast()}
+
+        }).showToast()
+    }
 
     contenedorCarrito.innerHTML = "";
     carrito.forEach((producto) => {
@@ -128,7 +129,7 @@ const mostrarCarrito = () => {
         </div>`
         contenedorCarrito.appendChild(card);
 
-        
+
         //Eliminar Producto.
 
         const boton = document.getElementById(`eliminar${producto.id}`)
@@ -210,8 +211,50 @@ const eliminarDelCarrito = (id) => {
     mostrarCarrito();
 
 
-localStorage.setItem("carrito", JSON.stringify(carrito))
+    localStorage.setItem("carrito", JSON.stringify(carrito))
 }
+
+//Vaciar Carrito
+
+const vaciarCarrito = document.getElementById("vaciarCarrito")
+
+vaciarCarrito.addEventListener("click", () => {
+    if (carrito.length > 0) {
+        Swal.fire({
+            title: 'Estas seguro de vaciar el carrito?',
+            text: "Esta accion no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonText: "Cancelar",
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminalo!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarTodoElCarrito();
+                mostrarCarrito();
+                calcularTotal();
+                Swal.fire(
+                    'El carrito ahora esta vacio!',
+                    'Vuelve a seleccionar tus productos.',
+                    'success'
+                )
+
+            }
+        })
+    } else {
+        Toastify({
+            text: "El carrito esta vacio",
+            duration: 2000,
+            gravity: "bottom",
+            position: "right",
+            style:
+            {
+                background: "red"
+            }
+        }).showToast();
+    }
+})
 
 // Mostrar total de la compra.
 
@@ -229,12 +272,12 @@ const calcularTotal = () => {
 
 const finalizarCompra = document.getElementById("finalizarCompra")
 
-finalizarCompra.addEventListener("click", ()=>{
+finalizarCompra.addEventListener("click", () => {
     completePurchase();
 })
 
-function completePurchase(){
-    if (carrito.length>0) {
+function completePurchase() {
+    if (carrito.length > 0) {
         Swal.fire({
             title: `Estas seguro que deseas finalizar tu compra?`,
             icon: "warning",
@@ -244,20 +287,20 @@ function completePurchase(){
             cancelButtonText: "Cancelar",
             cancelButtonColor: "#B7950B",
             confirmButtonColor: "#B7950B"
-        }).then((result) =>{
+        }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
-                    title:"Compra Finalizada. Gracias por tu compra!",
+                    title: "Compra Finalizada. Gracias por tu compra!",
                     icon: "success",
                     confirmButtonText: "Aceptar",
-                    confirmButtonColor:"#B7950B"
+                    confirmButtonColor: "#B7950B"
                 })
-                vaciarCarrito();
+                eliminarTodoElCarrito();
                 calcularTotal();
                 mostrarCarrito();
             }
         })
-    }else{
+    } else {
         Toastify({
             text: "No has seleccionado ningun producto para comprar",
             duration: 2000,
@@ -269,10 +312,10 @@ function completePurchase(){
             }
         }).showToast();
     }
-   
+
 }
 
-function vaciarCarrito(){
+function eliminarTodoElCarrito() {
     for (const producto of carrito) {
         producto.cantidad = 0
     }
