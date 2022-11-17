@@ -1,0 +1,8 @@
+[
+    {"id":1, "equipo": "FC Barcelona", "precio": 125, "img":"imagenes/FCB.jpg", "cantidad": 0},
+    {"id":2, "equipo": "Real Madrid", "precio": 120, "img":"imagenes/RealM.jpg", "cantidad": 0},
+    {"id":3, "equipo": "AC Milan", "precio": 115, "img":"imagenes/ACM.jpg", "cantidad": 0},
+    {"id":4, "equipo": "Bayern Munich", "precio": 119, "img":"imagenes/Bayern.jpg", "cantidad": 0},
+    {"id":5, "equipo": "Atletico", "precio": 90, "img":"imagenes/ATM.jpg", "cantidad": 0},
+    {"id":6, "equipo": "PSG", "precio": 85, "img":"imagenes/PSG.jpg", "cantidad": 0}
+]

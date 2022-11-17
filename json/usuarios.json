@@ -1,6 +1,0 @@
-[
-    {"nombre":"Esteban", "Apellido":"Bogoya","nombreUsuario":"estebanBog", "saldoCuenta": 2000},
-    {"nombre":"Maria", "Apellido":"Rodriguez","nombreUsuario":"mariaRod", "saldoCuenta": 4300},
-    {"nombre":"Alberto", "Apellido":"Hernandez","nombreUsuario":"albertoH", "saldoCuenta": 3000},
-    {"nombre":"Juan", "Apellido":"Perez","nombreUsuario":"juanP", "saldoCuenta": 1500}
-]

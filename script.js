@@ -1,85 +1,64 @@
-//Clase camisetas que son mi "base de datos"
-
-class Camiseta {
-    constructor(id, equipo, precio, img) {
-        this.id = id
-        this.equipo = equipo
-        this.precio = precio
-        this.img = img
-        this.cantidad = 0
-    }
-
-}
-
 let carrito = [];
+
 // CARGANDO CARRITO DESDE EL LOCALSTORAGE
 
 if (localStorage.getItem("carrito")) {
     carrito = JSON.parse(localStorage.getItem("carrito"))
 }
 
-const camiseta_FCB = new Camiseta(1, "FC Barcelona", 125, "imagenes/FCB.jpg")
-const camiseta_RMA = new Camiseta(2, "Real Madrid", 120, "imagenes/RealM.jpg")
-const camiseta_ACM = new Camiseta(3, "AC Milan", 115, "imagenes/ACM.jpg")
-const camiseta_Bayern = new Camiseta(4, "Bayern Munich", 119, "imagenes/Bayern.jpg")
-const camiseta_ATM = new Camiseta(5, "Atletico", 90, "imagenes/ATM.jpg")
-const camiseta_PSG = new Camiseta(6, "PSG", 85, "imagenes/PSG.jpg")
-
-const arrayProductos = [camiseta_FCB, camiseta_RMA, camiseta_ACM, camiseta_Bayern, camiseta_ATM, camiseta_PSG]
-
 // Creando mis productos en HTML. Modificando el DOM.
+// Traigo productos desde un archivo JSON utilizando fetch().
 
 const contenedorProductos = document.getElementById("contenedorProductos");
+const arrayProductos = "json/productos.json";
 
-const mostrarProductos = () => {
-    arrayProductos.forEach(producto => {
-        const card = document.createElement("div");
-        card.classList.add = ("col-xl-3", "col-md-6", "col-xs-12")
-        card.innerHTML = `
-        <div class ="card cards">
-            <img src = "${producto.img}" class = "card-img-top imgProductos" alt = "${producto.equipo}"
-            <div class = "card-body">
-            <h5 class = "card-title"> Camiseta del ${producto.equipo}</h5>
-            <p class = "card-text"> Precio: $${producto.precio} USD</p>
-            <button class = "btn colorBoton" id ="boton${producto.id}"> Agregar al Carrito </button>
-            </div>
-        </div>`
-        contenedorProductos.appendChild(card);
+fetch(arrayProductos)
+    .then(respuesta => respuesta.json())
+    .then(datos => {
+        console.log(datos);
+        datos.forEach(producto => {
+            const card = document.createElement("div");
+            card.classList.add = ("col-xl-3", "col-md-6", "col-xs-12")
+            card.innerHTML = `
+                <div class ="card cards">
+                    <img src = "${producto.img}" class = "card-img-top imgProductos" alt = "${producto.equipo}"
+                    <div class = "card-body">
+                    <h5 class = "card-title"> Camiseta del ${producto.equipo}</h5>
+                    <p class = "card-text"> Precio: $${producto.precio} USD</p>
+                    <button class = "btn colorBoton" id ="boton${producto.id}"> Agregar al Carrito </button>
+                    </div>
+                </div>`
+            contenedorProductos.appendChild(card);
 
-        // Agregar los productos!
+            // Agregar los productos!
 
-        const boton = document.getElementById(`boton${producto.id}`);
-        boton.addEventListener("click", () => {
-            agregarAlCarrito(producto.id);
-            Toastify({
-                text: "Producto Agregado al Carrito",
-                duration: 1000,
-                gravity: "bottom",
-                position: "right",
-            }).showToast();
+            const boton = document.getElementById(`boton${producto.id}`);
+            boton.addEventListener("click", () => {
+                agregarAlCarrito(producto.id);
+                Toastify({
+                    text: "Producto Agregado al Carrito",
+                    duration: 1000,
+                    gravity: "bottom",
+                    position: "right",
+                }).showToast();
+            })
+            const agregarAlCarrito = (id) => {
+                const producto = datos.find((producto) => producto.id === id);
+                const productoEnCarrito = carrito.find((producto) => producto.id === id)
+
+                if (productoEnCarrito) {
+                    productoEnCarrito.cantidad++
+                } else {
+                    carrito.push(producto);
+                    producto.cantidad++
+                    localStorage.setItem("carrito", JSON.stringify(carrito))
+                }
+                calcularTotal();
+            }
         })
-
     })
-}
-
-
-
-
-const agregarAlCarrito = (id) => {
-    const producto = arrayProductos.find((producto) => producto.id === id);
-    const productoEnCarrito = carrito.find((producto) => producto.id === id)
-
-    if (productoEnCarrito) {
-        productoEnCarrito.cantidad++
-    } else {
-        carrito.push(producto);
-        producto.cantidad++
-        localStorage.setItem("carrito", JSON.stringify(carrito))
-    }
-    calcularTotal();
-}
-
-mostrarProductos();
+    .catch(error => console.error(error))
+    .finally(() => console.log("Proceso Finalizado"));
 
 // Mostrando el carrito:
 
