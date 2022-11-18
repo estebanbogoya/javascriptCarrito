@@ -73,17 +73,7 @@ verCarrito.addEventListener("click", () => {
 
 const mostrarCarrito = () => {
     if (carrito.length === 0) {
-        Toastify({
-            text: "El Carrito esta vacio",
-            duration: 1000,
-            gravity: "bottom",
-            position: "right",
-            style:
-            {
-                background: "red"
-            }
-
-        }).showToast()
+        carritoVacio()
     }
 
     contenedorCarrito.innerHTML = "";
@@ -222,16 +212,7 @@ vaciarCarrito.addEventListener("click", () => {
             }
         })
     } else {
-        Toastify({
-            text: "El carrito esta vacio",
-            duration: 2000,
-            gravity: "bottom",
-            position: "right",
-            style:
-            {
-                background: "red"
-            }
-        }).showToast();
+        carritoVacio();
     }
 })
 
@@ -299,4 +280,18 @@ function eliminarTodoElCarrito() {
         producto.cantidad = 0
     }
     carrito.length = 0
+}
+
+function carritoVacio(){
+    Toastify({
+        text: "El Carrito esta vacio",
+        duration: 1000,
+        gravity: "bottom",
+        position: "right",
+        style:
+        {
+            background: "red"
+        }
+
+    }).showToast()
 }
